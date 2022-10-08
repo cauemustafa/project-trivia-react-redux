@@ -7,6 +7,8 @@ const INITIAL_STATE = {
   gravatarEmail: '',
   token: '',
   isFetching: false,
+  hash: '',
+  img: '',
 };
 
 const player = (state = INITIAL_STATE, action) => {
@@ -16,6 +18,7 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.payload.name,
       gravatarEmail: action.payload.gravatarEmail,
+      hash: action.payload.hash,
     };
   case ISFETCHING:
     return { ...state, isFetching: true };

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchingApiToken } from '../redux/actions';
+import { fetchingApiToken, addUser } from '../redux/actions';
 
 // Componentes controlado
 import TextField from '../components/controlledComponents/TextField';
@@ -24,7 +24,9 @@ class Login extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { getToken } = this.props;
+    const { getToken, addUsuario } = this.props;
+    const { name, gravatarEmail } = this.state;
+    addUsuario(name, gravatarEmail);
     getToken();
     this.setState({ carregando: true });
   };
@@ -89,12 +91,14 @@ const mapStateToProps = ({ player }) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getToken: () => dispatch(fetchingApiToken()),
+  addUsuario: (name, email) => dispatch(addUser(name, email)),
 });
 
 Login.propTypes = {
   getToken: PropTypes.func,
   isFetching: PropTypes.bool,
   token: PropTypes.string,
+  addUsuario: PropTypes.func,
 }.isRequired;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
