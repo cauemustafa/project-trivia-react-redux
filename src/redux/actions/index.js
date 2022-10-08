@@ -18,7 +18,6 @@ export const isFetching = () => ({ type: ISFETCHING });
 export const fetchingApiToken = () => async (dispatch) => {
   const response = await fetch('https://opentdb.com/api_token.php?command=request');
   const result = await response.json();
-  console.log(result);
   dispatch(receiveToken(result));
   dispatch(isFetching());
 };
