@@ -1,12 +1,16 @@
+import { MD5 } from 'crypto-js';
+
 export const ADD_USER = 'ADD_USER';
 export const GET_TOKEN = 'GET_TOKEN';
 export const ISFETCHING = 'ISFETCHING';
+export const SAVE_AVATAR = 'SAVE_AVATAR';
 
-export const addUser = (gravatarEmail, name) => ({
+export const addUser = (name, gravatarEmail) => ({
   type: ADD_USER,
   payload: {
     gravatarEmail,
     name,
+    hash: MD5(gravatarEmail).toString(),
   },
 });
 
