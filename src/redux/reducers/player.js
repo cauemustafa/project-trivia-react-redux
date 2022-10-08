@@ -1,10 +1,12 @@
-import { ADD_USER } from '../actions';
+import { ADD_USER, ISFETCHING, GET_TOKEN } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
   assertions: 0,
   score: 0,
   gravatarEmail: '',
+  token: '',
+  isFetching: false,
 };
 
 const player = (state = INITIAL_STATE, action) => {
@@ -15,6 +17,10 @@ const player = (state = INITIAL_STATE, action) => {
       name: action.payload.name,
       gravatarEmail: action.payload.gravatarEmail,
     };
+  case ISFETCHING:
+    return { ...state, isFetching: true };
+  case GET_TOKEN:
+    return { ...state, token: action.token, isFetching: false };
   default:
     return state;
   }
