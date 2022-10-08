@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import { fetchingApiToken } from '../redux/actions';
 
 // Componentes controlado
@@ -72,6 +72,11 @@ class Login extends Component {
         { carregando && <p>Carregando...</p> }
         { isFetching && <Redirect to="game" />}
         { isFetching && localStorage.setItem('token', token)}
+        <Link to="/settings">
+          <button type="button" data-testid="btn-settings">
+            Settings
+          </button>
+        </Link>
       </div>
     );
   }
