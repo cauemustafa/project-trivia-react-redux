@@ -1,18 +1,82 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import Header from '../components/Header';
+import { fetchQuestions } from '../redux/actions';
+import Questions from '../components/Questions';
 
 class Game extends Component {
+  state = {
+    questionIndex: 0,
+    showNextBtn: false,
+  };
+
+  async componentDidMount() {
+    const { getQuestions, questions, history } = this.props;
+    const token = localStorage.getItem('token');
+    await getQuestions(token);
+    this.verifyToken(questions, history);
+  }
+
+  verifyToken = (questions, history) => {
+    if (questions.length === 0) {
+      console.log('oi');
+      localStorage.removeItem('token');
+      history.push('/');
+    }
+  };
+
+  incrementQuestionIndex = () => {
+    this.setState(({ questionIndex }) => ({ questionIndex: questionIndex + 1 }));
+  };
+
+  showNextQuestion = () => {
+    this.incrementQuestionIndex();
+    this.setState({ showNextBtn: false });
+  };
+
+  responseAnswer = () => {
+    this.setState({ showNextBtn: true });
+  };
+
   render() {
+    const { questions } = this.props;
+
     return (
       <div>
         <Header />
         <h1>
           Game
         </h1>
+        {
+          questions.length > 0
+            && <Questions
+              { ...this.state }
+              responseAnswer={ this.responseAnswer }
+              showNextQuestion={ this.showNextQuestion }
+            />
+        }
       </div>
     );
   }
 }
 
-export default connect()(Game);
+const mapDispatchToProps = (dispatch) => ({
+  getQuestions: (token) => dispatch(fetchQuestions(token)),
+});
+
+const mapStateToProps = ({ player: { questions, isFetching } }) => ({
+  questions,
+  isFetching,
+});
+
+Game.propTypes = {
+  questions: PropTypes.arrayOf(PropTypes.objectOf),
+  getQuestions: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+}.isRequired;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);
