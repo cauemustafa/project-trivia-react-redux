@@ -16,7 +16,7 @@ class Game extends Component {
     const { getQuestions } = this.props;
     const token = localStorage.getItem('token');
     await getQuestions(token);
-    await this.verifyToken();
+    this.verifyToken();
   }
 
   verifyToken = () => {

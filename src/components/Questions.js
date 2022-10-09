@@ -30,20 +30,21 @@ class Questions extends Component {
     return arr;
   };
 
-  verifyAnswer = (answer, index) => {
-    console.log(answer);
-    return `wrong-answer-${index}`;
-  };
+  // verifyAnswer = (answer, index) => {
+  //   console.log(answer);
+  //   return `wrong-answer-${index}`;
+  // };
 
   render() {
     const { answers } = this.state;
     const {
       questions,
       questionIndex,
-      showNextBtn,
+      // showNextBtn,
       responseAnswer,
-      showNextQuestion,
+      // showNextQuestion,
     } = this.props;
+    console.log(questions[questionIndex].correct_answer);
     return (
       <div key={ questionIndex }>
 
@@ -57,34 +58,27 @@ class Questions extends Component {
 
         <div data-testid="answer-options">
           {
-            answers
-              .map((answer, index) => (
-                <button
-                  key={ index }
-                  type="button"
-                  data-testid={ () => this.verifyAnswer(answer, index) }
-                  onClick={ responseAnswer }
-                >
-                  {answer}
-                </button>))
-          }
-          {/* <button
-            type="button"
-            data-testid="correct-answer"
-            onClick={ responseAnswer }
-          >
-            { questions[questionIndex].correct_answer }
-          </button> */}
-
-          {
-            showNextBtn && (
-              <button
-                type="button"
-                onClick={ showNextQuestion }
-              >
-                Next
-              </button>
-            )
+            answers.map((element, index) => (
+              element === questions[questionIndex].correct_answer
+                ? (
+                  <button
+                    key={ index }
+                    type="button"
+                    data-testid="correct-answer"
+                    onClick={ responseAnswer }
+                  >
+                    { element }
+                  </button>)
+                : (
+                  <button
+                    key={ index }
+                    type="button"
+                    data-testid={ `wrong-answer-${index}` }
+                    onClick={ responseAnswer }
+                  >
+                    { element }
+                  </button>)
+            ))
           }
         </div>
 
