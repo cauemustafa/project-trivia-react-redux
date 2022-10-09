@@ -2,18 +2,19 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchingApiToken, addUser } from '../redux/actions';
+import { fetchToken, addUser } from '../redux/actions';
 
 // Componentes controlado
 import TextField from '../components/controlledComponents/TextField';
 import SubmitButton from '../components/controlledComponents/SubmitButton';
+import Loading from '../components/Loading';
 
 class Login extends Component {
   state = {
     name: '',
     gravatarEmail: '',
     isDisabled: true,
-    carregando: false,
+    isLoading: false,
   };
 
   handleChange = ({ target: { name, value } }) => {
@@ -24,11 +25,11 @@ class Login extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { getToken, addUsuario } = this.props;
     const { name, gravatarEmail } = this.state;
-    addUsuario(name, gravatarEmail);
+    const { getToken, addGlobalUser } = this.props;
+    addGlobalUser(name, gravatarEmail);
     getToken();
-    this.setState({ carregando: true });
+    this.setState({ isLoading: true });
   };
 
   validateButton = () => {
@@ -40,10 +41,17 @@ class Login extends Component {
   validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
   render() {
-    const { name, gravatarEmail, isDisabled, carregando } = this.state;
-    const { isFetching, token } = this.props;
+    const { name, gravatarEmail, isDisabled, isLoading } = this.state;
+    const { isFetching, token, error } = this.props;
 
-    return (
+    return isLoading ? (
+      <div>
+        <Loading />
+        { !isFetching && localStorage.setItem('token', token) }
+        { !isFetching && !error && <Redirect to="game" /> }
+        { error && <Redirect to="error" /> }
+      </div>
+    ) : (
       <div>
         <form onSubmit={ this.handleSubmit }>
           <TextField
@@ -71,9 +79,6 @@ class Login extends Component {
             Play
           </SubmitButton>
         </form>
-        { carregando && <p>Carregando...</p> }
-        { isFetching && <Redirect to="game" />}
-        { isFetching && localStorage.setItem('token', token)}
         <Link to="/settings">
           <button type="button" data-testid="btn-settings">
             Settings
@@ -87,16 +92,19 @@ class Login extends Component {
 const mapStateToProps = ({ player }) => ({
   isFetching: player.isFetching,
   token: player.token,
+  error: player.error,
+  errorMessage: player.errorMessage,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getToken: () => dispatch(fetchingApiToken()),
-  addUsuario: (name, email) => dispatch(addUser(name, email)),
+  getToken: () => dispatch(fetchToken()),
+  addGlobalUser: (name, email) => dispatch(addUser(name, email)),
 });
 
 Login.propTypes = {
   getToken: PropTypes.func,
   isFetching: PropTypes.bool,
+  error: PropTypes.bool,
   token: PropTypes.string,
   addUsuario: PropTypes.func,
 }.isRequired;

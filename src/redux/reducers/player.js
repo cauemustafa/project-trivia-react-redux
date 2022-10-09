@@ -1,4 +1,9 @@
-import { ADD_USER, ISFETCHING, GET_TOKEN } from '../actions';
+import {
+  ADD_USER,
+  REQUEST_API,
+  FAILED_REQUEST,
+  GET_TOKEN,
+} from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -7,6 +12,7 @@ const INITIAL_STATE = {
   gravatarEmail: '',
   token: '',
   isFetching: false,
+  error: false,
   hash: '',
   img: '',
 };
@@ -20,10 +26,20 @@ const player = (state = INITIAL_STATE, action) => {
       gravatarEmail: action.payload.gravatarEmail,
       hash: action.payload.hash,
     };
-  case ISFETCHING:
-    return { ...state, isFetching: true };
+  case REQUEST_API:
+    return { ...state, isFetching: true, error: false };
+  case FAILED_REQUEST:
+    return {
+      ...state,
+      isFetching: false,
+      error: true,
+      errorMessage: action.payload.message };
   case GET_TOKEN:
-    return { ...state, token: action.token, isFetching: false };
+    return {
+      ...state,
+      isFetching: false,
+      token: action.payload,
+    };
   default:
     return state;
   }
