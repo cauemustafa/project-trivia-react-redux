@@ -15,7 +15,7 @@ const INITIAL_STATE = {
   isFetching: false,
   error: false,
   hash: '',
-  img: '',
+  response: '',
   questions: [],
 };
 
@@ -46,7 +46,8 @@ const player = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       isFetching: false,
-      questions: action.payload,
+      response: action.payload.response_code,
+      questions: action.payload.results,
     };
   }
   default:

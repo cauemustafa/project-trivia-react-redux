@@ -44,7 +44,6 @@ class Questions extends Component {
       responseAnswer,
       showNextQuestion,
     } = this.props;
-
     return (
       <div key={ questionIndex }>
 
