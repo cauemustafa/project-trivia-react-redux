@@ -4,9 +4,9 @@ import { MD5 } from 'crypto-js';
 
 export const ADD_USER = 'ADD_USER';
 export const GET_TOKEN = 'GET_TOKEN';
+export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const REQUEST_API = 'REQUEST_API';
 export const FAILED_REQUEST = 'FAILED_REQUEST';
-export const SAVE_AVATAR = 'SAVE_AVATAR';
 
 // ACTIONS CREATORS
 
@@ -22,6 +22,11 @@ export const addUser = (name, gravatarEmail) => ({
 export const getToken = ({ token }) => ({
   type: GET_TOKEN,
   payload: token,
+});
+
+const getQuestions = ({ results }) => ({
+  type: GET_QUESTIONS,
+  payload: results, // se o token expirar results será um array vazio
 });
 
 // ACTIONS CREATORS FOR THUNK REQUESTS API
@@ -52,6 +57,20 @@ export const fetchToken = () => (
       const ENDPOINT = 'https://opentdb.com/api_token.php?command=request';
       const result = await fetchAPI(ENDPOINT);
       return dispatch(getToken(result));
+    } catch (error) {
+      console.error(error);
+      return dispatch(failedRequest(error));
+    }
+  }
+);
+
+export const fetchQuestions = (token) => (
+  async (dispatch) => {
+    dispatch(requestAPI());
+    try {
+      const ENDPOINT = `https://opentdb.com/api.php?amount=5&token=${token}`;
+      const result = await fetchAPI(ENDPOINT);
+      return dispatch(getQuestions(result));
     } catch (error) {
       console.error(error);
       return dispatch(failedRequest(error));

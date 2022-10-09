@@ -3,6 +3,7 @@ import {
   REQUEST_API,
   FAILED_REQUEST,
   GET_TOKEN,
+  GET_QUESTIONS,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
   error: false,
   hash: '',
   img: '',
+  questions: [],
 };
 
 const player = (state = INITIAL_STATE, action) => {
@@ -40,6 +42,13 @@ const player = (state = INITIAL_STATE, action) => {
       isFetching: false,
       token: action.payload,
     };
+  case GET_QUESTIONS: {
+    return {
+      ...state,
+      isFetching: false,
+      questions: action.payload,
+    };
+  }
   default:
     return state;
   }
