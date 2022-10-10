@@ -5,10 +5,13 @@ import PropTypes from 'prop-types';
 class Questions extends Component {
   state = {
     answers: [],
+    timer: 30,
+    isDisabled: false,
   };
 
   componentDidMount() {
     this.setState({ answers: this.ConcatAnswers() });
+    this.setTimer();
   }
 
   ConcatAnswers = () => {
@@ -30,13 +33,21 @@ class Questions extends Component {
     return arr;
   };
 
-  // verifyAnswer = (answer, index) => {
-  //   console.log(answer);
-  //   return `wrong-answer-${index}`;
-  // };
+  setTimer = () => {
+    const seconds = 1000;
+
+    const idTimer = setInterval(() => {
+      this.setState((state) => ({ timer: state.timer - 1 }));
+      const { timer } = this.state;
+      if (timer === 0) {
+        clearInterval(idTimer);
+        this.setState({ isDisabled: true, timer: 30 });
+      }
+    }, seconds);
+  };
 
   render() {
-    const { answers } = this.state;
+    const { answers, timer, isDisabled } = this.state;
     const {
       questions,
       questionIndex,
@@ -44,7 +55,7 @@ class Questions extends Component {
       responseAnswer,
       // showNextQuestion,
     } = this.props;
-    console.log(questions[questionIndex].correct_answer);
+
     return (
       <div key={ questionIndex }>
 
@@ -67,6 +78,7 @@ class Questions extends Component {
                     type="button"
                     data-testid="correct-answer"
                     onClick={ responseAnswer }
+                    disabled={ isDisabled }
                   >
                     { element }
                   </button>)
@@ -77,13 +89,14 @@ class Questions extends Component {
                     type="button"
                     data-testid={ `wrong-answer-${index}` }
                     onClick={ responseAnswer }
+                    disabled={ isDisabled }
                   >
                     { element }
                   </button>)
             ))
           }
         </div>
-
+        <p>{timer}</p>
       </div>
     );
   }
