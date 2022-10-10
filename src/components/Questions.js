@@ -40,7 +40,7 @@ class Questions extends Component {
     const {
       questions,
       questionIndex,
-      // showNextBtn,
+      showNextBtn,
       responseAnswer,
       // showNextQuestion,
     } = this.props;
@@ -62,6 +62,7 @@ class Questions extends Component {
               element === questions[questionIndex].correct_answer
                 ? (
                   <button
+                    className={ showNextBtn ? 'correct' : '' }
                     key={ index }
                     type="button"
                     data-testid="correct-answer"
@@ -71,6 +72,7 @@ class Questions extends Component {
                   </button>)
                 : (
                   <button
+                    className={ showNextBtn ? 'incorrect' : '' }
                     key={ index }
                     type="button"
                     data-testid={ `wrong-answer-${index}` }
