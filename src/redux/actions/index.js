@@ -24,9 +24,9 @@ export const getToken = ({ token }) => ({
   payload: token,
 });
 
-const getQuestions = ({ results }) => ({
+const getQuestions = (result) => ({
   type: GET_QUESTIONS,
-  payload: results, // se o token expirar results será um array vazio
+  payload: result, // se o token expirar results será um array vazio
 });
 
 // ACTIONS CREATORS FOR THUNK REQUESTS API
@@ -70,6 +70,7 @@ export const fetchQuestions = (token) => (
     try {
       const ENDPOINT = `https://opentdb.com/api.php?amount=5&token=${token}`;
       const result = await fetchAPI(ENDPOINT);
+      console.log(result);
       return dispatch(getQuestions(result));
     } catch (error) {
       console.error(error);

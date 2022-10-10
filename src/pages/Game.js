@@ -13,15 +13,16 @@ class Game extends Component {
   };
 
   async componentDidMount() {
-    const { getQuestions, questions, history } = this.props;
+    const { getQuestions } = this.props;
     const token = localStorage.getItem('token');
     await getQuestions(token);
-    this.verifyToken(questions, history);
+    this.verifyToken();
   }
 
-  verifyToken = (questions, history) => {
-    if (questions.length === 0) {
-      console.log('oi');
+  verifyToken = () => {
+    const { response, history } = this.props;
+    const numberMagic = 3;
+    if (response === numberMagic) {
       localStorage.removeItem('token');
       history.push('/');
     }
@@ -66,9 +67,10 @@ const mapDispatchToProps = (dispatch) => ({
   getQuestions: (token) => dispatch(fetchQuestions(token)),
 });
 
-const mapStateToProps = ({ player: { questions, isFetching } }) => ({
+const mapStateToProps = ({ player: { questions, isFetching, response } }) => ({
   questions,
   isFetching,
+  response,
 });
 
 Game.propTypes = {
