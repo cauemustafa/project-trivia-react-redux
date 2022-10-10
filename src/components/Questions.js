@@ -14,7 +14,6 @@ class Questions extends Component {
   };
 
   componentDidMount() {
-    // const { index } = this.state;
     // this.setState({ answers: this.ConcatAnswers() });
     this.setTimer();
     this.ConcatAnswers();
@@ -45,7 +44,7 @@ class Questions extends Component {
 
   setTimer = () => {
     const seconds = 1000;
-
+    this.setState({ timer: 30 });
     const idTimer = setInterval(() => {
       this.setState((state) => ({ timer: state.timer - 1 }));
       const { timer } = this.state;
@@ -70,13 +69,16 @@ class Questions extends Component {
   };
 
   updateAnwsers = () => {
-    this.incrementQuestionIndex();
-    this.ConcatAnswers();
     this.setState({ showNextBtn: false });
+    this.incrementQuestionIndex();
+    this.setTimer();
   };
 
   incrementQuestionIndex = () => {
-    this.setState(({ questionIndex }) => ({ questionIndex: questionIndex + 1 }));
+    this.setState(
+      (state) => ({ questionIndex: state.questionIndex + 1 }),
+      () => this.ConcatAnswers(),
+    );
   };
 
   sumScore = (difficulty, timer) => {
