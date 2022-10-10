@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { addScore } from '../redux/actions';
 
 class Questions extends Component {
   state = {
     answers: [],
     timer: 30,
     isDisabled: false,
+    showNextBtn: false,
+    idTimer: 0,
   };
 
   componentDidMount() {
@@ -41,18 +44,51 @@ class Questions extends Component {
       const { timer } = this.state;
       if (timer === 0) {
         clearInterval(idTimer);
-        this.setState({ isDisabled: true, timer: 30 });
+        this.setState({ isDisabled: true });
       }
     }, seconds);
+    this.setState({ idTimer });
+    return idTimer;
+  };
+
+  responseAnswer = (element) => {
+    this.setState({ showNextBtn: true });
+    const { idTimer, timer } = this.state;
+    const { questions, questionIndex, saveScore } = this.props;
+    clearInterval(idTimer);
+    if (element === questions[questionIndex].correct_answer) {
+      const score = this.sumScore(questions[questionIndex].difficulty, timer);
+      saveScore(score);
+    }
+  };
+
+  sumScore = (difficulty, timer) => {
+    let results = 0;
+    const number = 10;
+    const hard = 3;
+    const medium = 2;
+    const easy = 1;
+    switch (difficulty) {
+    case 'hard':
+      results = number + (timer * hard);
+      break;
+    case 'medium':
+      results = number + (timer * medium);
+      break;
+    case 'easy':
+      results = number + (timer * easy);
+      break;
+    default:
+      results = 0;
+    }
+    return results;
   };
 
   render() {
-    const { answers, timer, isDisabled } = this.state;
+    const { answers, timer, isDisabled, showNextBtn } = this.state;
     const {
       questions,
       questionIndex,
-      showNextBtn,
-      responseAnswer,
       // showNextQuestion,
     } = this.props;
 
@@ -77,10 +113,10 @@ class Questions extends Component {
                     key={ index }
                     type="button"
                     data-testid="correct-answer"
-                    onClick={ responseAnswer }
+                    onClick={ () => this.responseAnswer(element) }
                     disabled={ isDisabled }
                   >
-                    { element }
+                    {element}
                   </button>)
                 : (
                   <button
@@ -88,10 +124,10 @@ class Questions extends Component {
                     key={ index }
                     type="button"
                     data-testid={ `wrong-answer-${index}` }
-                    onClick={ responseAnswer }
+                    onClick={ () => this.responseAnswer(element) }
                     disabled={ isDisabled }
                   >
-                    { element }
+                    {element}
                   </button>)
             ))
           }
@@ -106,6 +142,10 @@ const mapStateToProps = ({ player }) => ({
   questions: player.questions,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  saveScore: (score) => dispatch(addScore(score)),
+});
+
 Questions.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.objectOf()),
   questionIndex: PropTypes.string,
@@ -114,7 +154,7 @@ Questions.propTypes = {
   showNextQuestion: PropTypes.func,
 }.isRequired;
 
-export default connect(mapStateToProps)(Questions);
+export default connect(mapStateToProps, mapDispatchToProps)(Questions);
 
 // How to shuffle elements of an array in JavaScript with sort:
 // https://sebhastian.com/shuffle-array-javascript/#:~:text=A%20JavaScript%20array%20elements%20can,using%20the%20sort()%20method.&text=The%20JavaScript%20Array%20sort(),value%20returned%20by%20that%20function.

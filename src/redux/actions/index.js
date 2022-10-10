@@ -7,6 +7,7 @@ export const GET_TOKEN = 'GET_TOKEN';
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const REQUEST_API = 'REQUEST_API';
 export const FAILED_REQUEST = 'FAILED_REQUEST';
+export const ADD_SCORE = 'ADD_SCORE';
 
 // ACTIONS CREATORS
 
@@ -27,6 +28,11 @@ export const getToken = ({ token }) => ({
 const getQuestions = (result) => ({
   type: GET_QUESTIONS,
   payload: result, // se o token expirar results será um array vazio
+});
+
+export const addScore = (score) => ({
+  type: ADD_SCORE,
+  payload: score,
 });
 
 // ACTIONS CREATORS FOR THUNK REQUESTS API

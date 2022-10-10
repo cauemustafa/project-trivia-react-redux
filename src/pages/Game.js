@@ -37,10 +37,6 @@ class Game extends Component {
     this.setState({ showNextBtn: false });
   };
 
-  responseAnswer = () => {
-    this.setState({ showNextBtn: true });
-  };
-
   render() {
     const { questions } = this.props;
 
@@ -54,7 +50,6 @@ class Game extends Component {
           questions.length > 0
             && <Questions
               { ...this.state }
-              responseAnswer={ this.responseAnswer }
               showNextQuestion={ this.showNextQuestion }
             />
         }

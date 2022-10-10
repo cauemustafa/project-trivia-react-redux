@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 class Header extends Component {
   render() {
-    const { avatar, nome } = this.props;
+    const { avatar, nome, score } = this.props;
     return (
       <header>
         <div>
@@ -20,7 +20,7 @@ class Header extends Component {
         <p>
           Score:
           {' '}
-          <span data-testid="header-score">0</span>
+          <span data-testid="header-score">{ score }</span>
         </p>
       </header>
     );
@@ -30,6 +30,7 @@ class Header extends Component {
 const mapStateToProps = ({ player }) => ({
   avatar: player.hash,
   nome: player.name,
+  score: player.score,
 });
 
 Header.propTypes = {
