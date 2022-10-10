@@ -76,7 +76,6 @@ export const fetchQuestions = (token) => (
     try {
       const ENDPOINT = `https://opentdb.com/api.php?amount=5&token=${token}`;
       const result = await fetchAPI(ENDPOINT);
-      console.log(result);
       return dispatch(getQuestions(result));
     } catch (error) {
       console.error(error);
