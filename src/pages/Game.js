@@ -7,10 +7,6 @@ import { fetchQuestions } from '../redux/actions';
 import Questions from '../components/Questions';
 
 class Game extends Component {
-  state = {
-    showNextBtn: false,
-  };
-
   async componentDidMount() {
     const { getQuestions } = this.props;
     const token = localStorage.getItem('token');
@@ -39,7 +35,7 @@ class Game extends Component {
         {
           questions.length > 0
             && <Questions
-              { ...this.state }
+              { ...this.props }
               showNextQuestion={ this.showNextQuestion }
             />
         }

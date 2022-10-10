@@ -14,7 +14,6 @@ class Questions extends Component {
   };
 
   componentDidMount() {
-    // this.setState({ answers: this.ConcatAnswers() });
     this.setTimer();
     this.ConcatAnswers();
   }
@@ -22,12 +21,10 @@ class Questions extends Component {
   ConcatAnswers = () => {
     const { questions } = this.props;
     const { questionIndex } = this.state;
-    console.log(questionIndex);
     const concat = questions[questionIndex].incorrect_answers
       .concat(questions[questionIndex].correct_answer);
 
     this.setState({ answers: this.shuffleArray(concat) });
-    // return this.shuffleArray(concat);
   };
 
   shuffleArray = (arr) => {
@@ -63,15 +60,19 @@ class Questions extends Component {
     const { questions, saveScore } = this.props;
     clearInterval(idTimer);
     if (element === questions[questionIndex].correct_answer) {
-      const score = this.sumScore(questions[questionIndex].difficulty, timer);
+      const score = this.updateScore(questions[questionIndex].difficulty, timer);
       saveScore(score);
     }
   };
 
   updateAnwsers = () => {
+    const { questionIndex } = this.state;
+    const { history } = this.props;
     this.setState({ showNextBtn: false });
     this.incrementQuestionIndex();
     this.setTimer();
+    const lastQuestion = 4;
+    if (questionIndex === lastQuestion) history.push('/feedback');
   };
 
   incrementQuestionIndex = () => {
@@ -81,7 +82,7 @@ class Questions extends Component {
     );
   };
 
-  sumScore = (difficulty, timer) => {
+  updateScore = (difficulty, timer) => {
     let results = 0;
     const number = 10;
     const hard = 3;
@@ -155,7 +156,6 @@ class Questions extends Component {
               onClick={ this.updateAnwsers }
             >
               Next
-
             </button>) }
         </div>
         <p>{timer}</p>
@@ -178,9 +178,9 @@ Questions.propTypes = {
   showNextBtn: PropTypes.bool,
   responseAnswer: PropTypes.func,
   showNextQuestion: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
 }.isRequired;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Questions);
-
-// How to shuffle elements of an array in JavaScript with sort:
-// https://sebhastian.com/shuffle-array-javascript/#:~:text=A%20JavaScript%20array%20elements%20can,using%20the%20sort()%20method.&text=The%20JavaScript%20Array%20sort(),value%20returned%20by%20that%20function.
