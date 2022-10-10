@@ -8,7 +8,6 @@ import Questions from '../components/Questions';
 
 class Game extends Component {
   state = {
-    questionIndex: 0,
     showNextBtn: false,
   };
 
@@ -26,15 +25,6 @@ class Game extends Component {
       localStorage.removeItem('token');
       history.push('/');
     }
-  };
-
-  incrementQuestionIndex = () => {
-    this.setState(({ questionIndex }) => ({ questionIndex: questionIndex + 1 }));
-  };
-
-  showNextQuestion = () => {
-    this.incrementQuestionIndex();
-    this.setState({ showNextBtn: false });
   };
 
   render() {

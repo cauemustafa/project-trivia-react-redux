@@ -10,18 +10,25 @@ class Questions extends Component {
     isDisabled: false,
     showNextBtn: false,
     idTimer: 0,
+    questionIndex: 0,
   };
 
   componentDidMount() {
-    this.setState({ answers: this.ConcatAnswers() });
+    // const { index } = this.state;
+    // this.setState({ answers: this.ConcatAnswers() });
     this.setTimer();
+    this.ConcatAnswers();
   }
 
   ConcatAnswers = () => {
-    const { questions, questionIndex } = this.props;
+    const { questions } = this.props;
+    const { questionIndex } = this.state;
+    console.log(questionIndex);
     const concat = questions[questionIndex].incorrect_answers
       .concat(questions[questionIndex].correct_answer);
-    return this.shuffleArray(concat);
+
+    this.setState({ answers: this.shuffleArray(concat) });
+    // return this.shuffleArray(concat);
   };
 
   shuffleArray = (arr) => {
@@ -53,13 +60,23 @@ class Questions extends Component {
 
   responseAnswer = (element) => {
     this.setState({ showNextBtn: true });
-    const { idTimer, timer } = this.state;
-    const { questions, questionIndex, saveScore } = this.props;
+    const { idTimer, timer, questionIndex } = this.state;
+    const { questions, saveScore } = this.props;
     clearInterval(idTimer);
     if (element === questions[questionIndex].correct_answer) {
       const score = this.sumScore(questions[questionIndex].difficulty, timer);
       saveScore(score);
     }
+  };
+
+  updateAnwsers = () => {
+    this.incrementQuestionIndex();
+    this.ConcatAnswers();
+    this.setState({ showNextBtn: false });
+  };
+
+  incrementQuestionIndex = () => {
+    this.setState(({ questionIndex }) => ({ questionIndex: questionIndex + 1 }));
   };
 
   sumScore = (difficulty, timer) => {
@@ -85,11 +102,9 @@ class Questions extends Component {
   };
 
   render() {
-    const { answers, timer, isDisabled, showNextBtn } = this.state;
+    const { answers, timer, isDisabled, showNextBtn, questionIndex } = this.state;
     const {
       questions,
-      questionIndex,
-      // showNextQuestion,
     } = this.props;
 
     return (
@@ -131,6 +146,15 @@ class Questions extends Component {
                   </button>)
             ))
           }
+          { showNextBtn && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.updateAnwsers }
+            >
+              Next
+
+            </button>) }
         </div>
         <p>{timer}</p>
       </div>
