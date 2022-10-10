@@ -4,6 +4,7 @@ import {
   FAILED_REQUEST,
   GET_TOKEN,
   GET_QUESTIONS,
+  ADD_SCORE,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -42,14 +43,18 @@ const player = (state = INITIAL_STATE, action) => {
       isFetching: false,
       token: action.payload,
     };
-  case GET_QUESTIONS: {
+  case GET_QUESTIONS:
     return {
       ...state,
       isFetching: false,
       response: action.payload.response_code,
       questions: action.payload.results,
     };
-  }
+  case ADD_SCORE:
+    return {
+      ...state,
+      score: state.score + action.payload,
+    };
   default:
     return state;
   }
