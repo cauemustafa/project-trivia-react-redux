@@ -49,5 +49,9 @@ describe('Criando Testes para Tela de Login', () => {
 
     userEvent.click(buttonPlay)
 
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/game')
+    })
+
   })
 })

@@ -49,7 +49,7 @@ class Login extends Component {
         <Loading />
         { !isFetching && localStorage.setItem('token', token) }
         { !isFetching && !error && <Redirect to="game" /> }
-        { error && <Redirect to="error" /> }
+        {/* { error && <Redirect to="error" /> } */}
       </div>
     ) : (
       <div>
