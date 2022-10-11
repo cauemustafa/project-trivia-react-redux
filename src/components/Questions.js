@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import { addScore } from '../redux/actions';
+
+const de = require('he');
 
 class Questions extends Component {
   state = {
@@ -47,7 +50,10 @@ class Questions extends Component {
       const { timer } = this.state;
       if (timer === 0) {
         clearInterval(idTimer);
-        this.setState({ isDisabled: true });
+        this.setState({
+          isDisabled: true,
+          showNextBtn: true,
+        });
       }
     }, seconds);
     this.setState({ idTimer });
@@ -68,7 +74,10 @@ class Questions extends Component {
   updateAnwsers = () => {
     const { questionIndex } = this.state;
     const { history } = this.props;
-    this.setState({ showNextBtn: false });
+    this.setState({
+      showNextBtn: false,
+      isDisabled: false,
+    });
     this.incrementQuestionIndex();
     this.setTimer();
     const lastQuestion = 4;
@@ -114,11 +123,11 @@ class Questions extends Component {
       <div key={ questionIndex }>
 
         <h3 data-testid="question-category">
-          {questions[questionIndex].category}
+          {de.decode(questions[questionIndex].category)}
         </h3>
 
         <h4 data-testid="question-text">
-          {questions[questionIndex].question}
+          {de.decode(questions[questionIndex].question)}
         </h4>
 
         <div data-testid="answer-options">
@@ -134,7 +143,7 @@ class Questions extends Component {
                     onClick={ () => this.responseAnswer(element) }
                     disabled={ isDisabled }
                   >
-                    {element}
+                    {de.decode(element)}
                   </button>)
                 : (
                   <button
@@ -145,18 +154,20 @@ class Questions extends Component {
                     onClick={ () => this.responseAnswer(element) }
                     disabled={ isDisabled }
                   >
-                    {element}
+                    {de.decode(element)}
                   </button>)
             ))
           }
-          { showNextBtn && (
-            <button
-              data-testid="btn-next"
-              type="button"
-              onClick={ this.updateAnwsers }
-            >
-              Next
-            </button>) }
+          {
+            showNextBtn && (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ this.updateAnwsers }
+              >
+                Next
+              </button>)
+          }
         </div>
         <p>{timer}</p>
       </div>
