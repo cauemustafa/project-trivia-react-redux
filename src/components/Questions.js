@@ -57,7 +57,6 @@ class Questions extends Component {
       }
     }, seconds);
     this.setState({ idTimer });
-    return idTimer;
   };
 
   responseAnswer = (element) => {

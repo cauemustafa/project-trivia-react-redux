@@ -4,6 +4,19 @@ import { findByTestId, getByTestId, queryAllByTestId, screen, waitFor } from '@t
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 
+const invalidToken = {
+  name: '',
+  assertions: 0,
+  score: 0,
+  gravatarEmail: '',
+  token: 'INVALID_TOKEN',
+  isFetching: false,
+  error: false,
+  hash: '',
+  response: 3,
+  questions: [],
+};
+
 const player = {
   name: 'Thiago',
   assertions: 3,
@@ -83,13 +96,25 @@ const player = {
 
 describe('Criando Testes pagina Game', () => {
   it('Testando elementos na pagina game', async () => {
-    const { history } = renderWithRouterAndRedux(<App />, { player }, '/game')
+    const { history } = renderWithRouterAndRedux(<App />, { player })
+
+    const inputName = screen.getByRole('textbox', { name: /nome/i });
+    const inputEmail = screen.getByRole('textbox', { name: /gravatar email/i });
+    const buttonPlay = screen.getByRole('button', {  name: /play/i});
+
+    userEvent.type(inputName, 'Daniel');
+    userEvent.type(inputEmail, 'test@gmail.com');
+    userEvent.click(buttonPlay);
+
     await waitFor(() => {
       const category = screen.getByTestId('question-category');
       const question = screen.getByTestId('question-text');
       const timer = screen.getByTestId('timer');
       const correctAnswer = screen.getByTestId('correct-answer');
       const incorrectAnswer = screen.getByTestId('wrong-answer-1');
+      const score = screen.getByTestId('header-score');
+
+
       expect(correctAnswer).toBeInTheDocument();
       expect(incorrectAnswer).toBeInTheDocument();
       expect(category).toBeInTheDocument();
@@ -98,13 +123,47 @@ describe('Criando Testes pagina Game', () => {
 
       userEvent.click(correctAnswer);
 
+      expect(correctAnswer).toHaveClass('correct')
+
       const btnNext = screen.getByTestId('btn-next')
+
       expect(btnNext).toBeInTheDocument();
+
       userEvent.click(btnNext)
-      const score = screen.getByTestId('header-score');
+
+      userEvent.click(incorrectAnswer)
+
       expect(score).toBeInTheDocument();
-    })
+      expect(score).not.toBe(39);
+    }, {timeout: 15000});
+  })
 
+  jest.setTimeout(50000)
+  it('Testando timer', async () => {
+    const { history } = renderWithRouterAndRedux(<App />)
 
+    const inputName = screen.getByRole('textbox', { name: /nome/i });
+    const inputEmail = screen.getByRole('textbox', { name: /gravatar email/i });
+    const buttonPlay = screen.getByRole('button', {  name: /play/i});
+
+    userEvent.type(inputName, 'Daniel');
+    userEvent.type(inputEmail, 'test@gmail.com');
+    userEvent.click(buttonPlay);
+
+    await screen.findByTestId("btn-next", {}, {timeout: 45000});
+});
+
+  it('Testando se a página redireciona para Login quando o token é inválido', async () => {
+    const { history } = renderWithRouterAndRedux(<App />, invalidToken.player)
+
+    const inputName = screen.getByRole('textbox', { name: /nome/i });
+    const inputEmail = screen.getByRole('textbox', { name: /gravatar email/i });
+    const buttonPlay = screen.getByRole('button', {  name: /play/i});
+
+    userEvent.type(inputName, 'Daniel');
+    userEvent.type(inputEmail, 'test@gmail.com');
+    userEvent.click(buttonPlay);
+    
+    expect(history.location.pathname).toBe('/')
   })
 })
