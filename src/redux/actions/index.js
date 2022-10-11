@@ -8,6 +8,8 @@ export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const REQUEST_API = 'REQUEST_API';
 export const FAILED_REQUEST = 'FAILED_REQUEST';
 export const ADD_SCORE = 'ADD_SCORE';
+export const CLEAR_SCORE = 'CLEAR_SCORE';
+export const ADD_RANK = 'ADD_RANK';
 
 // ACTIONS CREATORS
 
@@ -20,7 +22,23 @@ export const addUser = (name, gravatarEmail) => ({
   },
 });
 
-export const getToken = ({ token }) => ({
+export const addScore = (score) => ({
+  type: ADD_SCORE,
+  payload: score,
+});
+
+export const clearScore = () => ({
+  type: CLEAR_SCORE,
+});
+
+export const addRank = (name, hash, score) => ({
+  type: ADD_RANK,
+  payload: { name, hash, score },
+});
+
+// ACTIONS CREATORS FOR THUNK REQUESTS API
+
+const getToken = ({ token }) => ({
   type: GET_TOKEN,
   payload: token,
 });
@@ -29,13 +47,6 @@ const getQuestions = (result) => ({
   type: GET_QUESTIONS,
   payload: result, // se o token expirar results será um array vazio
 });
-
-export const addScore = (score) => ({
-  type: ADD_SCORE,
-  payload: score,
-});
-
-// ACTIONS CREATORS FOR THUNK REQUESTS API
 
 const requestAPI = () => ({
   type: REQUEST_API,
