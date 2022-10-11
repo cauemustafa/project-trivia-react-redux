@@ -5,6 +5,8 @@ import {
   GET_TOKEN,
   GET_QUESTIONS,
   ADD_SCORE,
+  CLEAR_SCORE,
+  ADD_RANK,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -18,7 +20,12 @@ const INITIAL_STATE = {
   hash: '',
   response: '',
   questions: [],
+  ranking: [],
 };
+
+const orderRank = (ranking) => ranking
+  .sort((a, b) => b.score - a.score);
+// Ref: https://dev.to/madanlal/how-to-sort-array-of-object-using-object-keys-in-javascript-58f1
 
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -56,9 +63,19 @@ const player = (state = INITIAL_STATE, action) => {
       score: state.score + action.payload,
       assertions: state.assertions + 1,
     };
+  case CLEAR_SCORE:
+    return { ...state, score: 0 };
+  case ADD_RANK:
+    return {
+      ...state,
+      ranking: orderRank([...state.ranking, action.payload]),
+    };
   default:
     return state;
   }
 };
 
 export default player;
+
+// Referência ordenando ranking pelo score:
+// https://stackoverflow.com/questions/8837454/sort-array-of-objects-by-single-key-with-date-value
