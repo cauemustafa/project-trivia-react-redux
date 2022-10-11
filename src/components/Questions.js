@@ -169,7 +169,7 @@ class Questions extends Component {
               </button>)
           }
         </div>
-        <p>{timer}</p>
+        <p data-testid="timer">{timer}</p>
       </div>
     );
   }

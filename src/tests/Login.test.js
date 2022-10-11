@@ -51,7 +51,7 @@ describe('Criando Testes para Tela de Login', () => {
 
     await waitFor(() => {
       expect(history.location.pathname).toBe('/game')
-    })
+    }, {timeout: 5000})
 
   })
 })
