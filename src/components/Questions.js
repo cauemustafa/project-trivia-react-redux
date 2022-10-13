@@ -60,7 +60,7 @@ class Questions extends Component {
   };
 
   responseAnswer = (element) => {
-    this.setState({ showNextBtn: true });
+    this.setState({ showNextBtn: true, isDisabled: true });
     const { idTimer, timer, questionIndex } = this.state;
     const { questions, saveScore } = this.props;
     clearInterval(idTimer);
@@ -91,24 +91,14 @@ class Questions extends Component {
   };
 
   updateScore = (difficulty, timer) => {
-    let results = 0;
     const number = 10;
     const hard = 3;
     const medium = 2;
     const easy = 1;
-    switch (difficulty) {
-    case 'hard':
-      results = number + (timer * hard);
-      break;
-    case 'medium':
-      results = number + (timer * medium);
-      break;
-    case 'easy':
-      results = number + (timer * easy);
-      break;
-    default:
-      results = 0;
-    }
+    let results = 0;
+    if (difficulty === 'hard') results = number + (timer * hard);
+    if (difficulty === 'medium') results = number + (timer * medium);
+    if (difficulty === 'easy') results = number + (timer * easy);
     return results;
   };
 

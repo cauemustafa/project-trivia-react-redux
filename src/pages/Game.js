@@ -29,9 +29,6 @@ class Game extends Component {
     return (
       <div>
         <Header />
-        <h1>
-          Game
-        </h1>
         {
           questions.length > 0
             && <Questions
