@@ -1,8 +1,9 @@
 import React from 'react';
-import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import App from '../App';
+import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 
 describe('Criando testes aleatorios', () => {
   jest.setTimeout(50000)
@@ -21,28 +22,33 @@ describe('Criando testes aleatorios', () => {
       const category = screen.getByTestId('question-category');
       const question = screen.getByTestId('question-text');
       const timer = screen.getByTestId('timer');
-      const correctAnswer = screen.getByTestId('correct-answer');
-      const incorrectAnswer = screen.getAllByTestId(/wrong-answer/i);
+      const incorrectAnswers = screen.getAllByTestId(/wrong-answer/i);
       const score = screen.getByTestId('header-score');
 
-
-      expect(correctAnswer).toBeInTheDocument();
-      expect(incorrectAnswer[0]).toBeInTheDocument();
+      incorrectAnswers.type === /multiple/i && expect(incorrectAnswers).toHaveLength(3);
+      incorrectAnswers.type === /boolean/i && expect(incorrectAnswers).toHaveLength(1);
       expect(category).toBeInTheDocument();
       expect(question).toBeInTheDocument();
       expect(timer).toBeInTheDocument();
       expect(score).toBeInTheDocument();
-    }, {timeout: 10000})
+    }, {timeout: 30000})
+
     await screen.findByTestId("btn-next", {}, {timeout: 45000});
     
-    const incorrectAnswer = screen.getAllByTestId(/wrong-answer/i);
-    for(let i = 0; i < 4; i += 1){
-      userEvent.click(screen.getByTestId('correct-answer'));
-      expect(screen.getByTestId('correct-answer')).toBeDisabled();
-      const btnNext = screen.getByTestId('btn-next');
-      userEvent.click(btnNext);
-      userEvent.click(incorrectAnswer[0])
-    }
+    for(let i = 0; i < 3; i += 1){
+      const incorrectAnswer = screen.getAllByTestId(/wrong-answer/i);
+      
+      expect(incorrectAnswer[i]).toBeInTheDocument();
 
+      userEvent.click(incorrectAnswer[i]);
+      const btnNext = screen.getByTestId('btn-next');
+      
+      expect(incorrectAnswer[i]).toBeDisabled();
+      expect(btnNext).toBeInTheDocument();
+      
+      userEvent.click(btnNext);
+    }
+    
+    
   })
 })
